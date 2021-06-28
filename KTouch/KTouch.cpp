@@ -23,12 +23,12 @@ int wmain( int argc, wchar_t *argv[ ], wchar_t *envp[ ] )
 
     do
     {
-		BOOL bParsed = CStringUtil::CommandLineExcludeFirstArg( output );
-		if ( FALSE == bParsed )
-		{
-			wprintf( L"[ERROR] Command Line Parse Failed. \r\n" );
+        BOOL bParsed = CStringUtil::CommandLineExcludeFirstArg( output );
+        if ( FALSE == bParsed )
+        {
+            wprintf( L"[ERROR] Command Line Parse Failed. \r\n" );
             break;
-		}
+        }
 
         CStringUtil::OutputDebugStringW(L"[INFO] Parsed Result: %s \r\n", output);
         CStringUtil::OutputDebugStringW(L"[INFO] Try Create File: %s \r\n", output);
