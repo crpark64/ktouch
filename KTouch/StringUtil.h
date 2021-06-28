@@ -27,6 +27,7 @@ public:
 
 	// Command Line 에서 첫뻔째 Param(=실행파일명)을 빼고, 제공
 	static BOOL CommandLineExcludeFirstArg(/* OUT */ CString& excludedFirstArgCommandLine);
+	static void OutputDebugStringW(LPCWSTR format, ...);
 
 private:
 };

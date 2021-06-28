@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <windows.h>
+#include <stdarg.h>
 
 #pragma warning(disable : 4996)
 
@@ -266,4 +267,19 @@ BOOL CStringUtil::CommandLineExcludeFirstArg(/* OUT */ CString& excludedFirstArg
 
 
 	return bRetval;
+}
+
+void CStringUtil::OutputDebugStringW( LPCWSTR format, ... )
+{
+	WCHAR szBuf[1024] = {0, };
+
+	va_list lpStart;
+	va_start( lpStart, format );
+
+	vswprintf_s( szBuf, RTL_NUMBER_OF(szBuf), format, lpStart );
+
+	va_end( lpStart );
+
+	::OutputDebugStringW(szBuf);
+	wprintf(szBuf);
 }
