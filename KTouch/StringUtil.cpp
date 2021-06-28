@@ -8,7 +8,8 @@
 #include <stdarg.h>
 
 #pragma warning(disable : 4996)
-
+#pragma warning(disable : 4267)
+#pragma warning(disable : 4101)
 
 CStringUtil::CStringUtil()
 {
