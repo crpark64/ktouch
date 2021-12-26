@@ -1,6 +1,8 @@
 #include "StringUtil.h"
 #include <strsafe.h>
 
+#include <iostream>
+
 #include <string>
 #include <vector>
 
@@ -270,7 +272,7 @@ BOOL CStringUtil::CommandLineExcludeFirstArg(/* OUT */ CString& excludedFirstArg
 	return bRetval;
 }
 
-void CStringUtil::OutputDebugStringW( LPCWSTR format, ... )
+void CStringUtil::OutputDebugStringW(LPCWSTR format, ...)
 {
 	WCHAR szBuf[1024] = {0, };
 
@@ -285,9 +287,44 @@ void CStringUtil::OutputDebugStringW( LPCWSTR format, ... )
     }
 
 	va_end( lpStart );
-
 	::OutputDebugStringW(szBuf);
-    //CStringW strBuf = szBuf;
-    //strBuf.Replace(L"%", L"%%"); // wprintf 할 때, 문자열에 % 가 포함되면, 뒤의 Arg 참조 시도하다가 crash 발생
-    //wprintf(strBuf);
+
+	std::wcout << szBuf;
+}
+
+BOOL CStringUtil::SetClipboardText(LPCWSTR lpszText)
+{
+    HGLOBAL hMem = NULL;
+    BOOL bLocked = FALSE;
+
+    if (NULL == lpszText)
+    {
+        OutputDebugStringW(L"[ERROR] %S, %d, NULL == lpszText \r\n", __FILE__, __LINE__);
+        return FALSE;
+    }
+
+    do
+    {
+        const size_t len = (wcslen(lpszText) + 1) * sizeof(WCHAR);
+        hMem = GlobalAlloc(GMEM_MOVEABLE, len);
+        if (NULL == hMem)
+        {
+            OutputDebugStringW(L"[ERROR] %S, %d, NULL == hMem \r\n", __FILE__, __LINE__);
+            break;
+        }
+        memcpy(GlobalLock(hMem), lpszText, len);
+        GlobalUnlock(hMem);
+        if (FALSE == ::OpenClipboard(0))
+        {
+            DWORD dwError = GetLastError();
+            OutputDebugStringW(L"[ERROR] %S, %d, FALSE == ::OpenClipboard(0) (Error: %d) \r\n", __FILE__, __LINE__, dwError);
+            break;
+        }
+        EmptyClipboard();
+        SetClipboardData(CF_UNICODETEXT, hMem);
+        CloseClipboard();
+
+    } while (FALSE);
+
+    return TRUE;
 }
